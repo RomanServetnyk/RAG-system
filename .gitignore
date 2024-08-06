@@ -1,0 +1,5 @@
+.env
+/env
+/myenv
+media/
+*__pycache__

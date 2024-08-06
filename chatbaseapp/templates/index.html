@@ -1,0 +1,922 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" class="light-style layout-navbar-fixed layout-menu-fixed" dir="ltr" data-theme="theme-default" data-assets-path="{% static 'assets/' %}" data-template="vertical-menu-template">
+  <head>
+    <link rel="stylesheet" type="text/css" href="{% static 'assets/vendor/css/pages/assistant.css' %}" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>PDFCake.com - Chat with Any Document using AI</title>
+
+    <meta name="description" content="Search & Summarize Documents with AI. Cut your reading time in half — upload a PDF to get answers, summaries, translations, and citations in seconds." />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="{% static 'assets/img/favicon/favicon.ico' %}" />
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" type="text/css" />
+
+    <!-- Icons -->
+    <link rel="stylesheet" type="text/css" href="{% static 'assets/vendor/fonts/materialdesignicons.css' %}" />
+    <link rel="stylesheet" type="text/css" href="{% static 'assets/vendor/fonts/fontawesome.css' %}" />
+    <!-- Menu waves for no-customizer fix -->
+    <link rel="stylesheet" type="text/css" href="{% static 'assets/vendor/libs/node-waves/node-waves.css' %}" />
+
+    <!-- Core CSS -->
+    <link rel="stylesheet" type="text/css" href="{% static 'assets/vendor/css/rtl/core.css' %}" class="template-customizer-core-css" />
+    <link rel="stylesheet" type="text/css" href="{% static 'assets/vendor/css/rtl/theme-default.css' %}" class="template-customizer-theme-css" />
+    <link rel="stylesheet" type="text/css" href="{% static 'assets/css/demo.css' %}" />
+
+    <!-- Vendors CSS -->
+    <link rel="stylesheet" type="text/css" href="{% static 'assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css' %}" />
+    <link rel="stylesheet" type="text/css" href="{% static 'assets/vendor/libs/typeahead-js/typeahead.css' %}" />
+    <link rel="stylesheet" type="text/css" href="{% static 'assets/vendor/libs/apex-charts/apex-charts.css' %}" />
+    <link rel="stylesheet" type="text/css" href="{% static 'assets/vendor/libs/swiper/swiper.css' %}" />
+
+    <!-- Page CSS -->
+    <link rel="stylesheet" type="text/css" href="{% static 'assets/vendor/css/pages/cards-statistics.css' %}" />
+    <link rel="stylesheet" type="text/css" href="{% static 'assets/vendor/css/pages/cards-analytics.css' %}" />
+    <link rel="stylesheet" type="text/css" href="{% static 'assets/vendor/css/pages/app-chat.css' %}" />
+    <!-- Helpers -->
+    <script src="{% static 'assets/vendor/js/helpers.js' %}"></script>
+
+    <!-- ! Template customizer & Theme config files MUST be included after core stylesheets and helpers.js in the <head> section -->
+    <!-- ? Template customizer: To hide customizer set displayCustomizer value false in config.js. -->
+    <script src="{% static 'assets/vendor/js/template-customizer.js' %}"></script>
+    <!-- ? Config: Mandatory theme config file contain global vars & default theme options, Set your preferred theme option in this file. -->
+    <script src="{% static 'assets/js/config.js' %}"></script>
+    <link rel="stylesheet" type="text/css" href="{% static 'assets/vendor/libs/toastr/toastr.css' %}" />
+    <link rel="stylesheet" type="text/css" href="{% static 'assets/vendor/libs/animate-css/animate.css' %}" />
+    <link rel="stylesheet" type="text/css" href="{% static 'assets/vendor/libs/rateyo/rateyo.css' %}" />
+    <!-- Page CSS -->
+    <link rel="stylesheet" type="text/css" href="{% static 'assets/vendor/css/pages/page-faq.css' %}" />
+    <style>
+      .logo {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+      .m-header {
+        padding-left: 0 !important;
+      }
+      .framer-1mnwiur {
+        flex: none;
+        height: 81px;
+        position: relative;
+        width: 598px;
+      }
+      @media (max-width: 998px) {
+        .framer-1mnwiur {
+          height: 51px;
+          width: 327px;
+        }
+
+        .how-card {
+          align-self: center;
+        }
+      }
+      .card-body {
+        overflow-x: hidden;
+      }
+      .main-card {
+        min-height: calc(100vh - 5rem);
+      }
+      .case-card {
+        height: 20rem;
+      }
+
+      .how-card {
+        height: 29rem;
+      }
+
+      .reveal {
+        position: relative;
+        opacity: 0;
+      }
+      .reveal.active {
+        opacity: 1;
+      }
+
+      @keyframes fade-bottom {
+        0% {
+          transform: translateY(100px);
+          opacity: 0;
+        }
+        100% {
+          transform: translateY(0);
+          opacity: 1;
+        }
+      }
+      @keyframes fade-left {
+        0% {
+          transform: translateX(-200px);
+          opacity: 0;
+        }
+        100% {
+          transform: translateX(0);
+          opacity: 1;
+        }
+      }
+      @keyframes fade-right {
+        0% {
+          transform: translateX(200px);
+          opacity: 0;
+        }
+        100% {
+          transform: translateX(0);
+          opacity: 1;
+        }
+      }
+
+      .active.fade-bottom {
+        animation: fade-bottom 0.5s ease-in;
+      }
+      .active.fade-left {
+        animation: fade-left 1s ease-in;
+      }
+      .active.fade-right {
+        animation: fade-right 1s ease-in;
+      }
+    </style>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZCG0SDQSBB"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+
+
+      gtag('config', 'G-ZCG0SDQSBB'); 
+    </script>
+  </head>
+
+  <body>
+    <!-- Layout wrapper -->
+    <div class="layout-wrapper layout-content-navbar">
+      <div class="layout-container">
+        <!-- Layout container -->
+        <div class="layout-page m-header">
+          <!-- Navbar -->
+
+          <nav class="layout-navbar container-xxl navbar navbar-expand-xl navbar-detached align-items-center bg-navbar-theme px-3" id="layout-navbar">
+            <div class="navbar-nav-right d-flex align-items-center" id="navbar-collapse">
+              <!-- Logo -->
+              <a href="/" class="auth-cover-brand align-items-center gap-2 d-flex" style="inset-block-start: auto;">
+                <span class="app-brand-logo demo">
+                  <span style="color: var(--bs-primary)">
+                    <svg width="268" height="150" viewBox="0 0 38 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M30.0944 2.22569C29.0511 0.444187 26.7508 -0.172113 24.9566 0.849138C23.1623 1.87039 22.5536 4.14247 23.5969 5.92397L30.5368 17.7743C31.5801 19.5558 33.8804 20.1721 35.6746 19.1509C37.4689 18.1296 38.0776 15.8575 37.0343 14.076L30.0944 2.22569Z" fill="currentColor" />
+                      <path d="M30.171 2.22569C29.1277 0.444187 26.8274 -0.172113 25.0332 0.849138C23.2389 1.87039 22.6302 4.14247 23.6735 5.92397L30.6134 17.7743C31.6567 19.5558 33.957 20.1721 35.7512 19.1509C37.5455 18.1296 38.1542 15.8575 37.1109 14.076L30.171 2.22569Z" fill="url(#paint0_linear_2989_100980)" fill-opacity="0.4" />
+                      <path d="M22.9676 2.22569C24.0109 0.444187 26.3112 -0.172113 28.1054 0.849138C29.8996 1.87039 30.5084 4.14247 29.4651 5.92397L22.5251 17.7743C21.4818 19.5558 19.1816 20.1721 17.3873 19.1509C15.5931 18.1296 14.9843 15.8575 16.0276 14.076L22.9676 2.22569Z" fill="currentColor" />
+                      <path d="M14.9558 2.22569C13.9125 0.444187 11.6122 -0.172113 9.818 0.849138C8.02377 1.87039 7.41502 4.14247 8.45833 5.92397L15.3983 17.7743C16.4416 19.5558 18.7418 20.1721 20.5361 19.1509C22.3303 18.1296 22.9391 15.8575 21.8958 14.076L14.9558 2.22569Z" fill="currentColor" />
+                      <path d="M14.9558 2.22569C13.9125 0.444187 11.6122 -0.172113 9.818 0.849138C8.02377 1.87039 7.41502 4.14247 8.45833 5.92397L15.3983 17.7743C16.4416 19.5558 18.7418 20.1721 20.5361 19.1509C22.3303 18.1296 22.9391 15.8575 21.8958 14.076L14.9558 2.22569Z" fill="url(#paint1_linear_2989_100980)" fill-opacity="0.4" />
+                      <path d="M7.82901 2.22569C8.87231 0.444187 11.1726 -0.172113 12.9668 0.849138C14.7611 1.87039 15.3698 4.14247 14.3265 5.92397L7.38656 17.7743C6.34325 19.5558 4.04298 20.1721 2.24875 19.1509C0.454514 18.1296 -0.154233 15.8575 0.88907 14.076L7.82901 2.22569Z" fill="currentColor" />
+                      <defs>
+                        <linearGradient id="paint0_linear_2989_100980" x1="5.36642" y1="0.849138" x2="10.532" y2="24.104" gradientUnits="userSpaceOnUse">
+                          <stop offset="0" stop-opacity="1" />
+                          <stop offset="1" stop-opacity="0" />
+                        </linearGradient>
+                        <linearGradient id="paint1_linear_2989_100980" x1="5.19475" y1="0.849139" x2="10.3357" y2="24.1155" gradientUnits="userSpaceOnUse">
+                          <stop offset="0" stop-opacity="1" />
+                          <stop offset="1" stop-opacity="0" />
+                        </linearGradient>
+                      </defs>
+                    </svg>
+                  </span>
+                </span>
+                <span class="app-brand-text demo text-heading fw-bold">PDF CAKE</span>
+              </a>
+              <!-- /Logo -->
+
+              <ul class="navbar-nav flex-row align-items-center ms-auto d-none d-sm-block">
+                <!-- Style Switcher -->
+                <li class="nav-item me-2 me-xl-4">
+                  <span class="nav-link btn btn-text-secondary rounded-pill btn-icon style-switcher-toggle hide-arrow"><i class="mdi mdi-24px"></i></span>
+                </li>
+                <!-- / Style Switcher -->
+
+                <!-- User -->
+                <li class="nav-item">
+                  <a href="/documents" class="btn btn-primary">Upload Your PDF Now</a>
+                </li>
+                <!-- / User -->
+              </ul>
+            </div>
+
+            <!-- Search Small Screens -->
+            <div class="navbar-search-wrapper search-input-wrapper d-none">
+              <input type="text" class="form-control search-input container-xxl border-0" placeholder="Search..." aria-label="Search..." />
+              <i class="mdi mdi-close search-toggler cursor-pointer"></i>
+            </div>
+          </nav>
+
+          <!-- / Navbar -->
+
+          <!-- Content wrapper -->
+          <div class="content-wrapper">
+            <!-- Content -->
+
+            <div class="container-xxl flex-grow-1 container-p-y" style="padding-top: 0!important; padding-bottom: 0!important;">
+              <div class="row gy-4">
+                <!-- Main Card -->
+                <div class="col-md-12">
+                  <div class="card main-card d-flex flex-column justify-content-center">
+                    <div class="d-flex align-items-end row">
+                      <div class="col-md-12 order-2 order-md-1 d-flex justify-content-center">
+                        <div class="card-body d-flex flex-column gap-4" style="text-align: center;max-width: 780px;">
+                          <h4 class="card-title pb-xl-2 display-1 text-primary"><strong>Chat With Any PDF</strong></h4>
+                          <p class="mb-1 display-6" style="font-weight:400;">Reading hundreds of pages of documents can be tiring and boring. You can now ask questions, get summaries, find information, and more in seconds!</p>
+                          <div class="d-flex flex-column gap-3">
+                            <span class="jq-ry-container mt-6">
+                              <div class="jq-ry-group-wrapper">
+                                <div class="jq-ry-normal-group jq-ry-group">
+                                  <!-- ?xml version="1.0" encoding="utf-8"? -->
+                                  <svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 12.705 512 486.59" x="0px" y="0px" xml:space="preserve" width="32px" height="32px" fill="gray">
+                                    <polygon points="256.814,12.705 317.205,198.566 512.631,198.566 354.529,313.435 414.918,499.295 256.814,384.427 98.713,499.295 159.102,313.435 1,198.566 196.426,198.566 "></polygon>
+                                  </svg>
+                                  <!-- ?xml version="1.0" encoding="utf-8"? -->
+                                  <svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 12.705 512 486.59" x="0px" y="0px" xml:space="preserve" width="32px" height="32px" fill="gray" style="margin-left: 0px;">
+                                    <polygon points="256.814,12.705 317.205,198.566 512.631,198.566 354.529,313.435 414.918,499.295 256.814,384.427 98.713,499.295 159.102,313.435 1,198.566 196.426,198.566 "></polygon>
+                                  </svg>
+                                  <!-- ?xml version="1.0" encoding="utf-8"? -->
+                                  <svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 12.705 512 486.59" x="0px" y="0px" xml:space="preserve" width="32px" height="32px" fill="gray" style="margin-left: 0px;">
+                                    <polygon points="256.814,12.705 317.205,198.566 512.631,198.566 354.529,313.435 414.918,499.295 256.814,384.427 98.713,499.295 159.102,313.435 1,198.566 196.426,198.566 "></polygon>
+                                  </svg>
+                                  <!-- ?xml version="1.0" encoding="utf-8"? -->
+                                  <svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 12.705 512 486.59" x="0px" y="0px" xml:space="preserve" width="32px" height="32px" fill="gray" style="margin-left: 0px;">
+                                    <polygon points="256.814,12.705 317.205,198.566 512.631,198.566 354.529,313.435 414.918,499.295 256.814,384.427 98.713,499.295 159.102,313.435 1,198.566 196.426,198.566 "></polygon>
+                                  </svg>
+                                  <!-- ?xml version="1.0" encoding="utf-8"? -->
+                                  <svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 12.705 512 486.59" x="0px" y="0px" xml:space="preserve" width="32px" height="32px" fill="gray" style="margin-left: 0px;">
+                                    <polygon points="256.814,12.705 317.205,198.566 512.631,198.566 354.529,313.435 414.918,499.295 256.814,384.427 98.713,499.295 159.102,313.435 1,198.566 196.426,198.566 "></polygon>
+                                  </svg>
+                                </div>
+                                <div class="jq-ry-rated-group jq-ry-group" style="width: 100%;">
+                                  <!-- ?xml version="1.0" encoding="utf-8"? -->
+                                  <svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 12.705 512 486.59" x="0px" y="0px" xml:space="preserve" width="32px" height="32px" fill="#f39c12">
+                                    <polygon points="256.814,12.705 317.205,198.566 512.631,198.566 354.529,313.435 414.918,499.295 256.814,384.427 98.713,499.295 159.102,313.435 1,198.566 196.426,198.566 "></polygon>
+                                  </svg>
+                                  <!-- ?xml version="1.0" encoding="utf-8"? -->
+                                  <svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 12.705 512 486.59" x="0px" y="0px" xml:space="preserve" width="32px" height="32px" fill="#f39c12" style="margin-left: 0px;">
+                                    <polygon points="256.814,12.705 317.205,198.566 512.631,198.566 354.529,313.435 414.918,499.295 256.814,384.427 98.713,499.295 159.102,313.435 1,198.566 196.426,198.566 "></polygon>
+                                  </svg>
+                                  <!-- ?xml version="1.0" encoding="utf-8"? -->
+                                  <svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 12.705 512 486.59" x="0px" y="0px" xml:space="preserve" width="32px" height="32px" fill="#f39c12" style="margin-left: 0px;">
+                                    <polygon points="256.814,12.705 317.205,198.566 512.631,198.566 354.529,313.435 414.918,499.295 256.814,384.427 98.713,499.295 159.102,313.435 1,198.566 196.426,198.566 "></polygon>
+                                  </svg>
+                                  <!-- ?xml version="1.0" encoding="utf-8"? -->
+                                  <svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 12.705 512 486.59" x="0px" y="0px" xml:space="preserve" width="32px" height="32px" fill="#f39c12" style="margin-left: 0px;">
+                                    <polygon points="256.814,12.705 317.205,198.566 512.631,198.566 354.529,313.435 414.918,499.295 256.814,384.427 98.713,499.295 159.102,313.435 1,198.566 196.426,198.566 "></polygon>
+                                  </svg>
+                                  <!-- ?xml version="1.0" encoding="utf-8"? -->
+                                  <svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 12.705 512 486.59" x="0px" y="0px" xml:space="preserve" width="32px" height="32px" fill="#f39c12" style="margin-left: 0px;">
+                                    <polygon points="256.814,12.705 317.205,198.566 512.631,198.566 354.529,313.435 414.918,499.295 256.814,384.427 98.713,499.295 159.102,313.435 1,198.566 196.426,198.566 "></polygon>
+                                  </svg>
+                                </div>
+                              </div>
+                            </span>
+                            <p class="mb-0">Used by Businesses, Scholars, Educators, and Experts</p>
+                            {% comment %} <div class="framer-1mnwiur" style="align-self: center;">
+                              <div style="position:absolute;border-radius:inherit;top:0;right:0;bottom:0;left:0" data-framer-background-image-wrapper="true">
+                                <img src="{% static 'assets/img/universities.webp' %}" alt="" srcset="https://framerusercontent.com/images/6G79MBZd8oyBdZ0bUPMprSBhje8.png?scale-down-to=512 512w, https://framerusercontent.com/images/6G79MBZd8oyBdZ0bUPMprSBhje8.png?scale-down-to=1024 1024w, https://framerusercontent.com/images/6G79MBZd8oyBdZ0bUPMprSBhje8.png 1584w" sizes="598px" style="display:block;width:100%;height:100%;border-radius:inherit;object-position:center;object-fit:cover;image-rendering:auto" />
+                              </div>
+                            </div> {% endcomment %}
+                            <a href="/documents" class="btn btn-primary btn-xl" style="align-self: center;">Upload Your PDF Now</a>
+                            <p>Free to use for the first PDF</p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <!-- / Main Card -->
+                
+                <!-- Use Cases Card -->
+                <div class="col-md-12 reveal fade-bottom">
+                  <div class="card d-flex flex-column justify-content-center" style="background-color: #00000000; box-shadow: none;">
+                    <div class="d-flex align-items-end row">
+                      <div class="col-md-12 order-2 order-md-1 d-flex justify-content-center">
+                        <div class="card-body d-flex flex-column gap-4" style="text-align: center;">
+                          <h4 class="card-title pb-xl-2 display-1 text-primary"><strong>Explore the World of Knowledge</strong></h4>
+                          <p class="mb-6 display-6" style="font-weight:400;display: inline-block; align-self: center;">Novels • Legal Contracts • Academic Research • User Guides • Educational Materials • Journal Articles • Financial Reports • Medical Literature • Government Documents • Technical Papers</p>
+                          <div class="row gy-4">
+                            <!-- Case Card -->
+                            <div class="col-12 col-md-6 col-lg-4">
+                              <div class="card d-flex flex-column justify-content-center">
+                                <div class="d-flex align-items-end row">
+                                  <div class="col-md-12 order-2 order-md-1 d-flex p-4 case-card">
+                                    <div class="card-body d-flex flex-column justify-content-start gap-3" style="text-align: center;max-width: 780px;">
+                                      <div class="avatar avatar-xl" style="align-self: center;">
+                                        <div class="avatar-initial bg-label-primary rounded">
+                                          <i class="mdi mdi-book-outline mdi-36px"></i>
+                                        </div>
+                                      </div>
+                                      <h3 class="card-title mb-0 pb-xl-0 text-primary"><strong>Paper summarization</strong></h3>
+                                      <p class="mb-0" style="font-weight:400;">"Summarize the methods section of the paper."</p>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            <!-- / case Card -->
+                            <!-- Case Card -->
+                            <div class="col-12 col-md-6 col-lg-4">
+                              <div class="card d-flex flex-column justify-content-center">
+                                <div class="d-flex align-items-end row">
+                                  <div class="col-md-12 order-2 order-md-1 d-flex p-4 case-card">
+                                    <div class="card-body d-flex flex-column justify-content-start gap-3" style="text-align: center;max-width: 780px;">
+                                      <div class="avatar avatar-xl" style="align-self: center;">
+                                        <div class="avatar-initial bg-label-primary rounded">
+                                          <i class="mdi mdi-help-circle-outline mdi-36px"></i>
+                                        </div>
+                                      </div>
+                                      <h3 class="card-title mb-0 pb-xl-0 text-primary"><strong>Ask Questions</strong></h3>
+                                      <p class="mb-0" style="font-weight:400;">"Who does Scarlett marry with?"</p>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            <!-- / case Card -->
+                            <!-- Case Card -->
+                            <div class="col-12 col-md-6 col-lg-4">
+                              <div class="card d-flex flex-column justify-content-center">
+                                <div class="d-flex align-items-end row">
+                                  <div class="col-md-12 order-2 order-md-1 d-flex p-4 case-card">
+                                    <div class="card-body d-flex flex-column justify-content-start gap-3" style="text-align: center;max-width: 780px;">
+                                      <div class="avatar avatar-xl" style="align-self: center;">
+                                        <div class="avatar-initial bg-label-primary rounded">
+                                          <i class="mdi mdi-translate mdi-36px"></i>
+                                        </div>
+                                      </div>
+                                      <h3 class="card-title mb-0 pb-xl-0 text-primary"><strong>Translate 90+ languages</strong></h3>
+                                      <p class="mb-0" style="font-weight:400;">"What is this document about? Can you translate it into Spanish?"</p>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            <!-- / case Card -->
+                            <!-- Case Card -->
+                            <div class="col-12 col-md-6 col-lg-4">
+                              <div class="card d-flex flex-column justify-content-center">
+                                <div class="d-flex align-items-end row">
+                                  <div class="col-md-12 order-2 order-md-1 d-flex p-4 case-card">
+                                    <div class="card-body d-flex flex-column justify-content-start gap-3" style="text-align: center;max-width: 780px;">
+                                      <div class="avatar avatar-xl" style="align-self: center;">
+                                        <div class="avatar-initial bg-label-primary rounded">
+                                          <i class="mdi mdi-bookmark-multiple-outline mdi-36px"></i>
+                                        </div>
+                                      </div>
+                                      <h3 class="card-title mb-0 pb-xl-0 text-primary"><strong>Citation retrieval</strong></h3>
+                                      <p class="mb-0" style="font-weight:400;">"Find a quote about how technology affects students."</p>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            <!-- / case Card -->
+                            <!-- Case Card -->
+                            <div class="col-12 col-md-6 col-lg-4">
+                              <div class="card d-flex flex-column justify-content-center">
+                                <div class="d-flex align-items-end row">
+                                  <div class="col-md-12 order-2 order-md-1 d-flex p-4 case-card">
+                                    <div class="card-body d-flex flex-column justify-content-start gap-3" style="text-align: center;max-width: 780px;">
+                                      <div class="avatar avatar-xl" style="align-self: center;">
+                                        <div class="avatar-initial bg-label-primary rounded">
+                                          <i class="mdi mdi-magnify-expand mdi-36px"></i>
+                                        </div>
+                                      </div>
+                                      <h3 class="card-title mb-0 pb-xl-0 text-primary"><strong>Keyword-free searching</strong></h3>
+                                      <p class="mb-0" style="font-weight:400;">"Review this document and list any clauses related to termination."</p>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            <!-- / case Card -->
+                            <!-- Case Card -->
+                            <div class="col-12 col-md-6 col-lg-4">
+                              <div class="card d-flex flex-column justify-content-center">
+                                <div class="d-flex align-items-end row">
+                                  <div class="col-md-12 order-2 order-md-1 d-flex p-4 case-card">
+                                    <div class="card-body d-flex flex-column justify-content-start gap-3" style="text-align: center;max-width: 780px;">
+                                      <div class="avatar avatar-xl" style="align-self: center;">
+                                        <div class="avatar-initial bg-label-primary rounded">
+                                          <i class="mdi mdi-book-open-page-variant-outline mdi-36px"></i>
+                                        </div>
+                                      </div>
+                                      <h3 class="card-title mb-0 pb-xl-0 text-primary"><strong>Study question generation</strong></h3>
+                                      <p class="mb-0" style="font-weight:400;">"Can you create some study questions about mitosis?"</p>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            <!-- / case Card -->
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <!-- / Use Cases Card -->
+
+                <!-- How to Card -->
+                <div class="col-md-12 reveal fade-bottom">
+                  <div class="card d-flex flex-column justify-content-center" style="background-color: #00000000; box-shadow: none;">
+                    <div class="d-flex align-items-end row">
+                      <div class="col-md-12 order-2 order-md-1 d-flex justify-content-center">
+                        <div class="card-body d-flex flex-column gap-4" style="text-align: center;">
+                          <h4 class="card-title pb-xl-2 display-1 text-primary"><strong>How It Works</strong></h4>
+                          <div class="row gy-4 justify-content-center">
+                            <!-- Step 1: Log in -->
+                            <div class="col-12 col-md-6 col-lg-4">
+                              <div class="card d-flex flex-column justify-content-center">
+                                <div class="d-flex align-items-end row">
+                                  <div class="col-md-12 order-2 order-md-1 d-flex p-4 how-card">
+                                    <div class="card-body d-flex flex-column justify-content-start gap-3" style="text-align: center;max-width: 780px;">
+                                      <div style="align-self: center;">
+                                        <img src="{% static 'assets/img/screen_1_0.png' %}" alt="Upload documents" style="height: 200px;">
+                                      </div>
+                                      <h3 class="card-title mb-0 pb-xl-0 text-primary"><strong>Step 1: Log in</strong></h3>
+                                      <p class="mb-0" style="font-weight:400;">Sign up or sign in using your Gmail or email account.</p>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            
+                            <!-- Step 2: Upload PDFs -->
+                            <div class="col-12 col-md-6 col-lg-4">
+                              <div class="card d-flex flex-column justify-content-center">
+                                <div class="d-flex align-items-end row">
+                                  <div class="col-md-12 order-2 order-md-1 d-flex p-4 how-card">
+                                    <div class="card-body d-flex flex-column justify-content-start gap-3" style="text-align: center;max-width: 780px;">
+                                      <div style="align-self: center;">
+                                        <img src="{% static 'assets/img/screen_2_0.png' %}" alt="Ask Questions" style="height: 200px;">
+                                      </div>
+                                      <h3 class="card-title mb-0 pb-xl-0 text-primary"><strong>Step 2: Upload PDFs</strong></h3>
+                                      <p class="mb-0" style="font-weight:400;">Upload your PDF files to PDFCake.com.</p>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            
+                            <!-- Step 3: Get Answers Instantly -->
+                            <div class="col-12 col-md-6 col-lg-4">
+                              <div class="card how-card d-flex flex-column justify-content-center">
+                                <div class="d-flex align-items-end row">
+                                  <div class="col-md-12 order-2 order-md-1 d-flex p-4 how-card">
+                                    <div class="card-body d-flex flex-column justify-content-start gap-3" style="text-align: center;max-width: 780px;">
+                                      <div style="align-self: center;">
+                                        <img src="{% static 'assets/img/screen_3_0.png' %}" alt="Get Answers" style="height: 200px;">
+                                      </div>
+                                      <h3 class="card-title mb-0 pb-xl-0 text-primary"><strong>Step 3: Get Answers Instantly</strong></h3>
+                                      <p class="mb-0" style="font-weight:400;">Ask questions about your documents and instantly receive answers, summaries, translations, and quotes with page citations.</p>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <!-- / How to Card -->
+                <!-- Loved Card -->
+                <!-- Testimonial Section -->
+                <div class="col-md-12 reveal fade-bottom">
+                  <div class="card d-flex flex-column justify-content-center" style="background-color: #00000000; box-shadow: none;">
+                    <div class="d-flex align-items-end row">
+                      <div class="col-md-12 order-2 order-md-1 d-flex justify-content-center">
+                        <div class="card-body d-flex flex-column gap-4" style="text-align: center;">
+                          <h4 class="card-title pb-xl-2 display-1 "><p class="mb-0 display-6" style="font-weight:400; align-self: center;"><strong>HAPPY CLIENTS</strong></p><strong class="text-primary">Satisfied Customers</strong></h4>
+                          <div class="row gy-3 justify-content-center">
+                            <!-- Testimonial Card -->
+                            <div class="col-12 col-md-4">
+                              <div class="card mb-3" style="text-align: left;">
+                                <div class="card-header">
+                                  <div class="d-flex align-items-start">
+                                    <div class="d-flex align-items-start">
+                                      <div class="avatar me-3">
+                                        <img src="{% static 'assets/img/user1.webp' %}" alt="Avatar" class="rounded-circle">
+                                      </div>
+                                      <div class="me-2 mt-2">
+                                        <h5 class="mb-1">
+                                          <span class="stretched-link text-heading">Ewan R.</span>
+                                        </h5>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                                <div class="card-body">
+                                  <p class="mb-0">🚀 AI Tool Today at Company 🚀</p>
+                                  <p class="mb-0">Amazing Product is a fantastic tool for boosting productivity. It has both free and premium tiers, so you can choose the features that suit your needs.</p>
+                                  <p class="mb-0">👉 pdfcake.com</p>
+                                </div>
+                              </div>
+                              <div class="card mb-3" style="text-align: left;">
+                                <div class="card-header">
+                                  <div class="d-flex align-items-start">
+                                    <div class="d-flex align-items-start">
+                                      <div class="avatar me-3">
+                                        <img src="{% static 'assets/img/user2.webp' %}" alt="Avatar" class="rounded-circle">
+                                      </div>
+                                      <div class="me-2 mt-2">
+                                        <h5 class="mb-1">
+                                          <span class="stretched-link text-heading">Dmitry Danual</span>
+                                        </h5>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                                <div class="card-body">
+                                  <p class="mb-0">Amazing Product is a helpful tool that simplifies complex tasks. It's like having a personal assistant for your documents and files.</p>
+                                </div>
+                              </div>
+                              <div class="card" style="text-align: left;">
+                                <div class="card-header">
+                                  <div class="d-flex align-items-start">
+                                    <div class="d-flex align-items-start">
+                                      <div class="avatar me-3">
+                                        <img src="{% static 'assets/img/user3.webp' %}" alt="Avatar" class="rounded-circle">
+                                      </div>
+                                      <div class="me-2 mt-2">
+                                        <h5 class="mb-1">
+                                          <span class="stretched-link text-heading">Heike Haas</span>
+                                        </h5>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                                <div class="card-body">
+                                  <p class="mb-0">I'm impressed with the level of AI advancement in today's tools. Amazing Product takes it to another level.</p>
+                                  <p class="mb-0">Please visit pdfcake.com for more information.</p>
+                                  <p class="mb-0">With Amazing Product, you can easily perform complex tasks and streamline your workflow.</p>
+                                  <p class="mb-0">Upload files or documents and let the AI assist you.</p>
+                                </div>
+                              </div>
+                            </div>
+                            <!-- / Testimonial Card -->
+                            <!-- Testimonial Card -->
+                            <div class="col-12 col-md-4">
+                              <div class="card mb-3" style="text-align: left;">
+                                <div class="card-header">
+                                  <div class="d-flex align-items-start">
+                                    <div class="d-flex align-items-start">
+                                      <div class="avatar me-3">
+                                        <img src="{% static 'assets/img/user4.webp' %}" alt="Avatar" class="rounded-circle">
+                                      </div>
+                                      <div class="me-2 mt-2">
+                                        <h5 class="mb-1">
+                                          <span class="stretched-link text-heading">Emily Chen</span>
+                                        </h5>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                                <div class="card-body">
+                                  <p class="mb-0">Looking to enhance your reading speed?</p><br>
+                                  <p class="mb-0">With the help of AI, PDF Cake can revolutionize your reading experience by enabling you to read a 50-page document in just 10 seconds!</p>
+                                  <br>
+                                  <p class="mb-0">Simply upload your document and ask any question. PDF Cake will provide you with quick answers, boosting your productivity.</p>
+                                  <br>
+                                  <p class="mb-0">Here's how it works:</p>
+                                  <ol>
+                                    <li>Upload a PDF: Whether it's a book, research paper, legal document, academic journal, textbook, or instruction manual, PDF Cake supports them all.</li>
+                                    <li>Ask anything about it: PDF Cake acts as your AI personal assistant, capable of explaining concepts, generating summaries, finding quotes, providing citations, writing blog and LinkedIn posts, generating study questions, and more.</li>
+                                    <li>Get instant answers: PDF Cake swiftly finds the information you need and provides accurate answers or generates content with citations, all within seconds.</li>
+                                  </ol>
+                                  <p class="mb-0">Save valuable time by trying PDF Cake for free at pdfcake.com!</p>
+                                </div>
+                              </div>
+                            </div>
+                            <!-- / Testimonial Card -->
+                            <!-- Testimonial Card -->
+                            <div class="col-12 col-md-4">
+                              <div class="card mb-3" style="text-align: left;">
+                                <div class="card-header">
+                                  <div class="d-flex align-items-start">
+                                    <div class="d-flex align-items-start">
+                                      <div class="avatar me-3">
+                                        <img src="{% static 'assets/img/user5.webp' %}" alt="Avatar" class="rounded-circle">
+                                      </div>
+                                      <div class="me-2 mt-2">
+                                        <h5 class="mb-1">
+                                          <span class="stretched-link text-heading">Richard	Newman
+                                          </span>
+                                        </h5>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                                <div class="card-body">
+                                  <p class="mb-0">PDF Cake is an amazing tool for students and professionals alike.</p>
+                                  <p class="mb-0">You can easily upload your PDF documents and get accurate answers to any questions within them.</p>
+                                  <p class="mb-0">It's like having a personal assistant dedicated to your academic or work-related needs.</p>
+                                </div>
+                              </div>
+                              <div class="card mb-3" style="text-align: left;">
+                                <div class="card-header">
+                                  <div class="d-flex align-items-start">
+                                    <div class="d-flex align-items-start">
+                                      <div class="avatar me-3">
+                                        <img src="{% static 'assets/img/user6.webp' %}" alt="Avatar" class="rounded-circle">
+                                      </div>
+                                      <div class="me-2 mt-2">
+                                        <h5 class="mb-1">
+                                          <span class="stretched-link text-heading">Sophie Coleman</span>
+                                        </h5>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                                <div class="card-body">
+                                  <p class="mb-0">PDF Cake: Boost Your Productivity!</p>
+                                  <p class="mb-0">Experience the ultimate productivity companion - PDF Cake. Unleash its power by effortlessly uploading your PDFs and witness how it unlocks answers to your burning questions within the document with precision and efficiency.</p>
+                                  <p class="mb-0">Think of it as your personal research assistant, custom-made to skyrocket your academic or professional endeavors. And the best part? It's completely free!</p>
+                                </div>
+                              </div>
+                            </div>
+                            <!-- / Testimonial Card -->
+                            
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <!-- / Loved Card -->
+                <!-- Global Reach Card -->
+                <div class="col-md-12 reveal fade-bottom">
+                  <div class="card d-flex flex-column justify-content-center" style="background-color: #00000000; box-shadow: none;">
+                    <div class="d-flex align-items-end row">
+                      <div class="col-md-12 order-2 order-md-1 d-flex justify-content-center">
+                        <div class="card-body d-flex flex-column gap-4" style="text-align: center;">
+                          <h4 class="card-title pb-xl-2 display-1 text-primary"><strong>Accessible in 90+ Languages</strong></h4>
+                          <p class="mb-6 display-6" style="font-weight:400;max-width: 780px;display: inline-block; align-self: center;">Join thousands of researchers, PhDs, academics, and professionals from around the globe who rely on PDF Cake.</p>
+                          <img src="{% static 'assets/img/world.webp' %}" alt="world map" srcset="" style="border: var(--bs-card-border-width) solid var(--bs-card-border-color); border-radius: var(--bs-card-border-radius);">
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <!-- / Global Reach Card -->
+                <!-- FAQ Card -->
+                <div class="col-md-12 reveal fade-bottom">
+                  <div class="card d-flex flex-column justify-content-center" style="background-color: #00000000; box-shadow: none;">
+                    <div class="d-flex align-items-end row">
+                      <div class="col-md-12 order-2 order-md-1 d-flex justify-content-center">
+                        <div class="card-body d-flex flex-column gap-4" style="text-align: center;">
+                          <h4 class="card-title pb-xl-2 display-1"><p class="mb-2 display-6" style="font-weight:400;align-self: center;">Frequently Asked Questions</p><strong class="text-primary">FAQ</strong></h4>
+                          <!-- FAQ's -->
+                          <div class="col-lg-9 col-md-8 col-12" style="align-self: center; text-align: left;">
+                            <div class="tab-content p-0">
+                              <div class="tab-pane fade show active" id="payment" role="tabpanel">
+                                <div id="accordionPayment" class="accordion">
+                                  <div class="accordion-item">
+                                    <h2 class="accordion-header">
+                                      <button
+                                        class="accordion-button"
+                                        type="button"
+                                        data-bs-toggle="collapse"
+                                        aria-expanded="true"
+                                        data-bs-target="#accordionPayment-1"
+                                        aria-controls="accordionPayment-1">
+                                        <strong>How can I utilize PDFCake?</strong>
+                                      </button>
+                                    </h2>
+                
+                                    <div id="accordionPayment-1" class="accordion-collapse collapse">
+                                      <div class="accordion-body">
+                                        PDF Cake can be used for various purposes with your PDFs. You can ask questions, review documents, find information, and more in seconds.  It saves you hours of scrolling and allows you to understand documents deeply in minutes.  Try it for free yourself.
+                                      </div>
+                                    </div>
+                                  </div>
+                
+                                  <div class="accordion-item">
+                                    <h2 class="accordion-header">
+                                      <button
+                                        class="accordion-button collapsed"
+                                        type="button"
+                                        data-bs-toggle="collapse"
+                                        data-bs-target="#accordionPayment-2"
+                                        aria-controls="accordionPayment-2">
+                                        <strong>What kind of questions should I ask?</strong>
+                                      </button>
+                                    </h2>
+                                    <div id="accordionPayment-2" class="accordion-collapse collapse">
+                                      <div class="accordion-body">
+                                        Feel free to ask any question you want! We are here to provide answers and assist you with any type of question.  Common questions include: "Can you summarize this document?" and "Give me the big takeaways from this document".
+                                      </div>
+                                    </div>
+                                  </div>
+                
+                                  <div class="accordion-item">
+                                    <h2 class="accordion-header">
+                                      <button
+                                        class="accordion-button collapsed"
+                                        type="button"
+                                        data-bs-toggle="collapse"
+                                        data-bs-target="#accordionPayment-3"
+                                        aria-controls="accordionPayment-3">
+                                        <strong>Does PDFCake support different languages?</strong>
+                                      </button>
+                                    </h2>
+                                    <div id="accordionPayment-3" class="accordion-collapse collapse">
+                                      <div class="accordion-body">
+                                        Yes, PDF Cake works with 90+ languages. You can upload documents in different languages, ask questions in various languages, and even translate between different languages.
+                                      </div>
+                                    </div>
+                                  </div>
+                
+                                  <div class="accordion-item">
+                                    <h2 class="accordion-header">
+                                      <button
+                                        class="accordion-button collapsed"
+                                        type="button"
+                                        data-bs-toggle="collapse"
+                                        data-bs-target="#accordionPayment-4"
+                                        aria-controls="accordionPayment-4">
+                                        <strong>Is the information provided accurate?</strong>
+                                      </button>
+                                    </h2>
+                                    <div id="accordionPayment-4" class="accordion-collapse collapse">
+                                      <div class="accordion-body">
+                                        PDFCake generates answers based on the content of the document you upload. If it's a legal document, our AI utilizes information from that document to provide accurate responses and find relevant information.  It is accurate and uses the latest AI technology to be your partner to increase productivity and allow you to learn better.
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <!-- /FAQ's -->
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <!-- / FAQ Card -->
+              </div>
+            </div>
+
+            <!-- Footer -->
+            <footer class="content-footer footer bg-footer-theme">
+              <div class="container-xxl">
+                <div class="footer-container d-flex align-items-center justify-content-between p-3 flex-md-row flex-column">
+                  <div class="mb-2 mb-md-0" style="text-align: center;">
+                    ©<script>
+                       document.write(new Date().getFullYear())
+                     </script>, <span class="d-none d-sm-inline">made with <span class="text-danger">❤️</span></span> by
+                    <a href="/"  class="footer-link fw-medium">PDF CAKE</a>
+                  </div>
+                  <div class="d-flex gap-2 gap-sm-4 justify-content-center" style="text-align: center; flex-wrap: wrap;">
+                    <a href="/pricing" class="footer-link">Pricing</a>
+                    <a href="/about"  class="footer-link">About</a>
+                    {% comment %} <a href="/blog" class="footer-link">Blog</a>
+                    <a href="/faq"  class="footer-link">FAQ</a>
+                    <a href="/contact"  class="footer-link">Contact</a>
+                     {% endcomment %}
+                  </div>
+                </div>
+              </div>
+            </footer>
+            <!-- / Footer -->
+
+            <div class="content-backdrop fade"></div>
+          </div>
+          <!-- Content wrapper -->
+        </div>
+        <!-- / Layout page -->
+      </div>
+
+      <!-- Overlay -->
+      <div class="layout-overlay layout-menu-toggle"></div>
+
+      <!-- Drag Target Area To SlideIn Menu On Small Screens -->
+      <div class="drag-target"></div>
+    </div>
+
+    <!-- / Layout wrapper -->
+    <script src="{% static 'assets/vendor/libs/jquery/jquery.js' %}"></script>
+    <script src="{% static 'assets/vendor/libs/popper/popper.js' %}"></script>
+    <script src="{% static 'assets/vendor/js/bootstrap.js' %}"></script>
+    <script src="{% static 'assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.js' %}"></script>
+    <script src="{% static 'assets/vendor/libs/node-waves/node-waves.js' %}"></script>
+
+    <script src="{% static 'assets/vendor/libs/hammer/hammer.js' %}"></script>
+    <script src="{% static 'assets/vendor/libs/i18n/i18n.js' %}"></script>
+    <script src="{% static 'assets/vendor/libs/typeahead-js/typeahead.js' %}"></script>
+
+    <script src="{% static 'assets/vendor/js/menu.js' %}"></script>
+    <!-- endbuild -->
+
+    <!-- Vendors JS -->
+    <script src="{% static 'assets/vendor/libs/apex-charts/apexcharts.js' %}"></script>
+    <script src="{% static 'assets/vendor/libs/swiper/swiper.js' %}"></script>
+
+    <!-- Main JS -->
+    <script src="{% static 'assets/js/main.js' %}"></script>
+
+    <!-- Page JS -->
+    <script src="{% static 'assets/js/dashboards-analytics.js' %}"></script>
+    <script src="{% static 'assets/vendor/libs/toastr/toastr.js' %}"></script>
+    <script>
+      $(document).ready(function () {
+        errorMessage = '{{error}}'
+        warningMessage = '{{warning}}'
+        successMessage = '{{success}}'
+        infoMessage = '{{info}}'
+      
+        if (errorMessage.length > 0) alert('error', errorMessage)
+        if (warningMessage.length > 0) alert('warning', warningMessage)
+        if (successMessage.length > 0) alert('success', successMessage)
+        if (infoMessage.length > 0) alert('info', infoMessage)
+      
+        var csrftoken = jQuery('[name=csrfmiddlewaretoken]').val()
+      
+        var INDEX = 0
+        $('#chat-submit').click(function (e) {
+          e.preventDefault()
+          var msg = $('#chat-input').val()
+          if (msg.trim() == '') {
+            return false
+          }
+          generate_message(msg, 'self')
+      
+          $.ajax({
+            type: 'POST',
+            url: '/chat',
+            headers: {
+              'X-CSRFToken': csrftoken
+            },
+            data: { history: 'first chat', question: msg },
+            success: function (res) {
+              generate_message(res, 'user')
+            }
+          })
+        })
+      })
+
+      function reveal() {
+        var reveals = document.querySelectorAll(".reveal");
+        for (var i = 0; i < reveals.length; i++) {
+          var windowHeight = window.innerHeight;
+          var elementTop = reveals[i].getBoundingClientRect().top;
+          var elementVisible = 150;
+          if (elementTop < windowHeight - elementVisible) {
+            reveals[i].classList.add("active");
+          } else {
+            reveals[i].classList.remove("active");
+          }
+        }
+      }
+
+      window.addEventListener("scroll", reveal);
+
+      // To check the scroll position on page load
+      reveal();
+    </script>
+    <script>
+      let alert = (type, message) => {
+        var shortCutFunction = type, // 'success', 'warning', 'error', 'info'
+          isRtl = $('html').attr('dir') === 'rtl',
+          msg = message,
+          title = ''
+        console.log('type', shortCutFunction)
+      
+        toastr.options = {
+          maxOpened: 1,
+          autoDismiss: true,
+          closeButton: true,
+          debug: false,
+          newestOnTop: true,
+          progressBar: true,
+          positionClass: 'toast-top-right',
+          preventDuplicates: false,
+          onclick: null,
+          rtl: isRtl,
+          showDuration: 300,
+          hideDuration: 1000,
+          timeOut: 5000,
+          extendedTimeOut: 1000,
+          showEasing: 'swing',
+          hideEasing: 'linear',
+          showMethod: 'fadeIn',
+          hideMethod: 'fadeOut'
+        }
+      
+        var $toast = toastr[shortCutFunction](msg, title) // Wire up an event handler to a button in the toast, if it exists
+        $toastlast = $toast
+      }
+    </script>
+  </body>
+</html>

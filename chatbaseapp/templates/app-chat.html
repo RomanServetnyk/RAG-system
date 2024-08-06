@@ -1,0 +1,547 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block header %}
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
+
+  <title>Chat | PDF CAKE</title>
+
+  <meta name="description" content="" />
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/x-icon" href="{% static 'assets/img/favicon/favicon.ico' %}" />
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" type="text/css" />
+
+  <!-- Icons -->
+  <link rel="stylesheet" type="text/css" href="{% static 'assets/vendor/fonts/materialdesignicons.css' %}" />
+  <link rel="stylesheet" type="text/css" href="{% static 'assets/vendor/fonts/fontawesome.css' %}" />
+  <!-- Menu waves for no-customizer fix -->
+  <link rel="stylesheet" type="text/css" href="{% static 'assets/vendor/libs/node-waves/node-waves.css' %}" />
+
+  <!-- Core CSS -->
+  <link rel="stylesheet" type="text/css" href="{% static 'assets/vendor/css/rtl/core.css' %}" class="template-customizer-core-css" />
+  <link rel="stylesheet" type="text/css" href="{% static 'assets/vendor/css/rtl/theme-default.css' %}" class="template-customizer-theme-css" />
+  <link rel="stylesheet" type="text/css" href="{% static 'assets/css/demo.css' %}" />
+
+  <!-- Vendors CSS -->
+  <link rel="stylesheet" type="text/css" href="{% static 'assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css' %}" />
+  <link rel="stylesheet" type="text/css" href="{% static 'assets/vendor/libs/typeahead-js/typeahead.css' %}" />
+  <link rel="stylesheet" type="text/css" href="{% static 'assets/vendor/libs/bootstrap-maxlength/bootstrap-maxlength.css' %}" />
+
+  <!-- Page CSS -->
+
+  <link rel="stylesheet" type="text/css" href="{% static 'assets/vendor/css/pages/app-chat.css' %}" />
+  <!-- Helpers -->
+  <script src="{% static 'assets/vendor/js/helpers.js' %}"></script>
+
+  <!-- ! Template customizer & Theme config files MUST be included after core stylesheets and helpers.js in the <head> section -->
+  <!-- ? Template customizer: To hide customizer set displayCustomizer value false in config.js. -->
+  <script src="{% static 'assets/vendor/js/template-customizer.js' %}"></script>
+  <!-- ? Config: Mandatory theme config file contain global vars & default theme options, Set your preferred theme option in this file. -->
+  <script src="{% static 'assets/js/config.js' %}"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.6.347/pdf.min.js" integrity="sha512-Z8CqofpIcnJN80feS2uccz+pXWgZzeKxDsDNMD/dJ6997/LSRY+W4NmEt9acwR+Gt9OHN0kkI1CTianCwoqcjQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <link rel="stylesheet" type="text/css" href="{% static 'assets/pdfjs/pdf_viewer.min.css' %}" />
+  <style>
+    .message {
+      overflow-wrap: anywhere;
+    }
+    #message {
+      max-height: 10em;
+      overflow-y: auto;
+    }
+    .question {
+      cursor: pointer;
+    }
+    .question:hover {
+      text-decoration: underline;
+    }
+    .chat-history-footern {
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      left: 0;
+    }
+
+    .light-style .chat-history-footern{
+      background-color: #f8f8f9
+    }
+
+    .dark-style .chat-history-footern{
+      background-color: #3e415b
+    }
+  </style>
+  <link rel="stylesheet" type="text/css" href="{% static 'assets/vendor/libs/spinkit/spinkit.css' %}" />
+
+  
+{% endblock %}
+
+{% block body %}
+  <div style="height: 100%;">
+    <div class="app-chat card overflow-hidden" style="height: 100%;">
+      <div class="row g-0">
+        <!-- Chat History -->
+        <div class="col pdf-viewer d-none d-md-block" id="pdf-viewer">
+          {% comment %} <iframe src="{% static 'assets/pdfjs/web/viewer.html?file=' %}{{ document.file }}" frameborder="0" style="width: 100%; height: 100%;"></iframe> {% endcomment %}
+        </div>
+        <!-- /Chat History -->
+        <!-- Chat History -->
+        <div class="col app-chat-history">
+          <div class="chat-history-wrapper">
+            <div class="chat-history-header border-bottom">
+              <div class="d-flex justify-content-between align-items-center">
+                <div class="d-flex overflow-hidden align-items-center">
+                  <div class="flex-shrink-0 avatar avatar-online">
+                    <img src="{% static 'assets/img/avatars/bot.jfif' %}" alt="Avatar" class="rounded-circle" data-bs-toggle="sidebar" data-overlay data-target="#app-chat-sidebar-right" />
+                  </div>
+                  <div class="chat-contact-info flex-grow-1 ms-3 d-sm-block d-none">
+                    <h6 class="m-0">Bot</h6>
+                    <span class="user-status text-body">Great Assistance</span>
+                  </div>
+                  <div class="chat-contact-info flex-grow-1 ms-3">
+                    <h3 id="chat-title" class="text-primary m-0 d-none"></h3>
+                  </div>
+                </div>
+                <div class="d-flex align-items-center">
+                  <i id="return_documents" class="mdi mdi-arrow-u-left-top mdi-24px cursor-pointer me-1 btn btn-text-secondary btn-icon rounded-pill"></i>
+                  <i id="delete-history" class="mdi mdi-delete-outline mdi-24px cursor-pointer me-1 btn btn-text-secondary btn-icon rounded-pill"></i>
+                </div>
+              </div>
+            </div>
+            <div class="chat-history-body py-2 px-1 py-sm-4 px-sm-4"  id="body" style="background-color:#d7983d34">
+              <ul id="chat-history-ul" class="list-unstyled chat-history">
+                <li class="chat-message">
+                  <div class="d-flex overflow-hidden">
+                    <div class="user-avatar flex-shrink-0 me-1 me-sm-3">
+                      <div class="avatar avatar-sm">
+                        <img src="{% static 'assets/img/avatars/bot.jfif' %}" alt="Avatar" class="rounded-circle" />
+                      </div>
+                    </div>
+                    <div class="chat-message-wrapper flex-grow-1">
+                      <div class="chat-message-text">
+                        <p class="mb-0 message">
+                          Hello. Here you can ask questions to me.<br>
+                          If you don't know what to ask, you can use the following questions.<br>
+                          {% for question in questions %}
+                            <br>
+                            <span class="question">{{ question | safe }}</span>
+                          {% endfor %}
+                      </div>
+                    </div>
+                  </div>
+                </li>
+
+                {% for chat in chats %}
+                  <li class="chat-message chat-message-right">
+                    <div class="d-flex overflow-hidden">
+                      <div class="chat-message-wrapper flex-grow-1">
+                        <div class="chat-message-text message">
+                          <p class="mb-0">{{ chat.question | safe }}</p>
+                        </div>
+                        <div class="text-end text-muted">
+                          <i class="mdi mdi-check mdi-14px text-success me-1"></i>
+                          <div class="me-1" style="display:none;" id="sk-chase">
+                            <div class="sk-chase sk-primary text-success">
+                              <div class="sk-chase-dot"></div>
+                              <div class="sk-chase-dot"></div>
+                              <div class="sk-chase-dot"></div>
+                              <div class="sk-chase-dot"></div>
+                              <div class="sk-chase-dot"></div>
+                              <div class="sk-chase-dot"></div>
+                            </div>
+                          </div>
+                          <small>{{ chat.sent }}</small>
+                        </div>
+                      </div>
+                      <div class="user-avatar flex-shrink-0 ms-1 ms-sm-3">
+                        <div class="avatar avatar-sm">
+                          <img src="{% static 'assets/img/avatars/1.png' %}" alt="Avatar" class="rounded-circle" />
+                        </div>
+                      </div>
+                    </div>
+                  </li>
+                  <li class="chat-message">
+                    <div class="d-flex overflow-hidden">
+                      <div class="user-avatar flex-shrink-0 me-1 me-sm-3">
+                        <div class="avatar avatar-sm">
+                          <img src="{% static 'assets/img/avatars/bot.jfif' %}" alt="Avatar" class="rounded-circle" />
+                        </div>
+                      </div>
+                      <div class="chat-message-wrapper flex-grow-1">
+                        <div class="chat-message-text">
+                          <p class="mb-0 message">{{ chat.answer | safe }}</p>
+                        </div>
+                        <div class="text-muted">
+                          <small>{{ chat.received }}</small>
+                        </div>
+                      </div>
+                    </div>
+                  </li>
+                {% endfor %}
+              </ul>
+            </div>
+            <!-- Chat message form -->
+            <div class="chat-history-footern py-2 px-2" id="footer">
+              <div class="form-send-message d-flex justify-content-between align-items-center">
+                {% csrf_token %}
+                <div class="message-input shadow-none" style="flex: auto;">
+                  <textarea id="message" rows="1" class="form-control" placeholder="Type your message here"></textarea>
+                </div>
+                {% comment %} <input id="message" class="form-control message-input me-3 shadow-none" placeholder="Type your message here" /> {% endcomment %}
+                <div class="message-actions d-flex align-items-end" style="align-self:flex-end">
+                  <i id="send" class="mdi text-primary mdi-send-outline d-flex send-msg-btn" style="position: absolute;    right: 1rem; bottom: 1rem; cursor: pointer;"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- /Chat History -->
+
+        <div class="app-overlay"></div>
+      </div>
+    </div>
+  </div>
+  <div class="btn-group" role="group" aria-label="Basic example" style="position: absolute; display:none;" id="context_buttons">
+    <button type="button" class="btn btn-info btn-sm waves-effect waves-light" id="summarize-button">Summarize</button>
+    <button type="button" class="btn btn-info btn-sm waves-effect waves-light" id="explain-button">Explain</button>
+  </div>
+{% endblock %}
+
+{% block script %}
+  <!-- Core JS -->
+  <!-- build:js assets/vendor/js/core.js -->
+  <script src="{% static 'assets/vendor/libs/jquery/jquery.js' %}"></script>
+  <script src="{% static 'assets/vendor/libs/popper/popper.js' %}"></script>
+  <script src="{% static 'assets/vendor/js/bootstrap.js' %}"></script>
+  <script src="{% static 'assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.js' %}"></script>
+  <script src="{% static 'assets/vendor/libs/node-waves/node-waves.js' %}"></script>
+
+  <script src="{% static 'assets/vendor/libs/hammer/hammer.js' %}"></script>
+  <script src="{% static 'assets/vendor/libs/i18n/i18n.js' %}"></script>
+  <script src="{% static 'assets/vendor/libs/typeahead-js/typeahead.js' %}"></script>
+
+  <script src="{% static 'assets/vendor/js/menu.js' %}"></script>
+  <!-- endbuild -->
+
+  <!-- Vendors JS -->
+  <script src="{% static 'assets/vendor/libs/bootstrap-maxlength/bootstrap-maxlength.js' %}"></script>
+
+  <!-- Main JS -->
+  <script src="{% static 'assets/js/main.js' %}"></script>
+
+  <!-- Page JS -->
+  <script src="{% static 'assets/js/app-chat.js' %}"></script>
+  <script>
+    const chatHistoryBody_2 = document.querySelector('.chat-history-body')
+    function scrollToBottom(){
+      chatHistoryBody_2.scrollTo(0, chatHistoryBody_2.scrollHeight);
+    }
+
+    var csrftoken = jQuery('[name=csrfmiddlewaretoken]').val()
+    let isPending = false
+    let lastChild = null
+    let chaseChild = null;
+    let checkChild = null;
+
+    function slideShow(text){
+      if (!lastChild) return
+      let i = 0
+      let timer = setInterval(() => {
+        i++
+        lastChild.html(text.slice(0, i))
+        scrollToBottom()
+        if (i >= text.length) {
+          clearInterval(timer); 
+          isPending = false
+          if (checkChild) checkChild.show()
+            checkChild = null
+          if(chaseChild) chaseChild.hide()
+            chaseChild = null
+        }
+      }, 10)
+    }
+    
+    const getTimeString = (currentTime) => {
+
+      // Define the months in an array
+      const months = [
+        'Jan.', 'Feb.', 'Mar.', 'Apr.', 'May', 'Jun.',
+        'Jul.', 'Aug.', 'Sep.', 'Oct.', 'Nov.', 'Dec.'
+      ];
+
+      // Get the month, day, year, hours, and minutes
+      const month = months[currentTime.getMonth()];
+      const day = currentTime.getDate();
+      const year = currentTime.getFullYear();
+      let hours = currentTime.getHours();
+      let minutes = currentTime.getMinutes();
+      let period = 'AM';
+
+      // Convert hours to 12-hour format and determine if it's AM or PM
+      if (hours >= 12) {
+        period = 'PM';
+        hours %= 12;
+      }
+
+      // Add leading zeros if necessary
+      if (hours < 10) {
+        hours = '0' + hours;
+      }
+
+      if (minutes < 10) {
+        minutes = '0' + minutes;
+      }
+
+      // Create the formatted string
+      const formattedTime = `${month} ${day}, ${year}, ${hours}:${minutes} ${period}`;
+
+      return formattedTime
+    }
+
+    let sendMessage = (question) => {
+      if (isPending) return
+      isPending = true
+      const now = new Date() // create a new Date object with the current date and time
+      const options = { hour12: false, hourCycle: 'h23', second: undefined } //???
+      const currentTime = getTimeString(now)
+      var message = `
+              <li class="chat-message chat-message-right">
+                <div class="d-flex overflow-hidden">
+                  <div class="chat-message-wrapper flex-grow-1">
+                    <div class="chat-message-text">
+                      <p class="mb-0">${question.replace(/\n/g, '<br>')}</p>
+                    </div>
+                    <div class="text-end text-muted">
+                      <i class="mdi mdi-check mdi-14px text-success me-1" style="display:none"></i>
+                      <div class="me-1" style="display:inline-block;" id="sk-chase">
+                        <div class="sk-chase sk-primary text-success">
+                          <div class="sk-chase-dot text-success"></div>
+                          <div class="sk-chase-dot text-success"></div>
+                          <div class="sk-chase-dot text-success"></div>
+                          <div class="sk-chase-dot text-success"></div>
+                          <div class="sk-chase-dot text-success"></div>
+                          <div class="sk-chase-dot text-success"></div>
+                        </div>
+                      </div>
+                      <small>${currentTime}</small>
+                    </div>
+                  </div>
+                  <div class="user-avatar flex-shrink-0 ms-1 ms-sm-3">
+                    <div class="avatar avatar-sm">
+                      <img src="{% static 'assets/img/avatars/1.png' %}" alt="Avatar" class="rounded-circle" />
+                    </div>
+                  </div>
+                </div>
+              </li>
+            `
+      $('#chat-history-ul').append(message)
+      scrollToBottom()
+    
+      $.ajax({
+        type: 'POST',
+        url: '/chat',
+        headers: {
+          'X-CSRFToken': csrftoken
+        },
+        data: { question, documentId: '{{document.id}}' },
+        success: function (data) {
+          const now = new Date() // create a new Date object with the current date and time
+          const currentTime = getTimeString(now)
+          checkChild = $('#chat-history-ul li:last-child i');
+          chaseChild = $('#chat-history-ul li:last-child #sk-chase');
+          console.log(checkChild, chaseChild)
+          let answer = `
+                  <li class="chat-message">
+                    <div class="d-flex overflow-hidden">
+                      <div class="user-avatar flex-shrink-0 me-1 me-sm-3">
+                        <div class="avatar avatar-sm">
+                          <img src="{% static 'assets/img/avatars/bot.jfif' %}" alt="Avatar" class="rounded-circle" />
+                        </div>
+                      </div>
+                      <div class="chat-message-wrapper flex-grow-1">
+                        <div class="chat-message-text">
+                          <p class="mb-0"></p>
+                        </div>
+                        <div class="text-muted">
+                          <small>${currentTime}</small>
+                        </div>
+                      </div>
+                    </div>
+                  </li>
+                `
+          $('#chat-history-ul').append(answer)
+          lastChild = $('#chat-history-ul li:last-child p');
+          slideShow(data)
+        }
+      })
+    }
+    const footer = document.querySelector('.content-footer')
+    $('#body').css('height', `calc(100vh - 9rem - ${$('#footer').height()}px - ${footer.offsetHeight}px)`)
+    $(document).ready(function () {
+      $('#message').on('input', function (e) {
+        $('#body').css('height', `calc(100vh - 9rem - ${$('#footer').height()}px - ${footer.offsetHeight}px)`)
+      })
+      $('#message').keypress(function (e) {
+        if (e.which == 13) {
+          if (e.shiftKey) {
+            $('#message').text($('#message').text() + '\n')
+          } else {
+            e.preventDefault()
+            $('#send').click()
+          }
+        }
+      })
+    
+      $('#send').click(function () {
+        var question = $('#message').val()
+        $('#message').val('')
+        $('#message').trigger('input').trigger('change')
+        sendMessage(question)
+      })
+    
+      $(document).click(() => {
+        document.getElementById('context_buttons').style.display = 'none'
+      })
+    
+      $('#return_documents').click(() => {
+        window.location.href = '/documents'
+      })
+    
+      $('#delete-history').click(() => {
+        var history = $('#chat-title').text()
+        console.log('delete==============', history)
+        $.ajax({
+          type: 'POST',
+          url: '/delete_history',
+          headers: {
+            'X-CSRFToken': csrftoken
+          },
+          data: { documentId: '{{document.id}}' },
+          success: function (data) {
+            $('#chat-history-ul').html($('#chat-history-ul li:first-child'))
+          }
+        })
+      })
+    })
+  </script>
+
+  <script>
+    // Fetch the PDF document URL
+    var pdfUrl = '{{MEDIA_URL}}{{document.file}}'
+    var encodedPdfUrl = encodeURIComponent(pdfUrl) // Encode the PDF URL
+    
+    var viewerUrl = "{% static 'assets/pdfjs/web/viewer.html' %}?file=" + encodedPdfUrl // Construct the viewer URL
+    
+    // Create an iframe to display the PDF viewer
+    var iframe = document.createElement('iframe')
+    iframe.src = viewerUrl
+    iframe.width = '100%'
+    iframe.height = '100%'
+    
+    // Append the iframe to the container element
+    var container = document.getElementById('pdf-viewer')
+    container.appendChild(iframe)
+    
+    // Wait for the iframe to load its content
+    iframe.addEventListener('load', function () {
+      var iframeDocument = iframe.contentDocument || iframe.contentWindow.document
+      iframeDocument.addEventListener('mousedown', () => {
+        document.getElementById('context_buttons').style.display = 'none'
+      })
+      // Add event listener for text selection events within the iframe
+      iframeDocument.addEventListener('mouseup', function () {
+        var selectedText = iframeDocument.getSelection().toString()
+        console.log(selectedText)
+    
+        if (selectedText.length > 0) {
+          // Create a button element
+          var button = document.getElementById('context_buttons')
+    
+          // Get the position information of the PDF viewer element
+          var position = container.getBoundingClientRect()
+    
+          // Access the top and left coordinates
+          var topCoordinate = position.top
+          var leftCoordinate = position.left
+    
+          button.style.display = 'inline-flex'
+    
+          // Set the button's position based on the selection
+          var selectionRange = iframeDocument.getSelection().getRangeAt(0)
+          var rangeRect = selectionRange.getBoundingClientRect()
+          button.style.left = leftCoordinate + rangeRect.right + 'px'
+          button.style.top = topCoordinate + rangeRect.top + 'px'
+          console.log(rangeRect)
+    
+          $('#summarize-button')
+            .off('click')
+            .on('click', (e) => {
+              var selectedText = iframeDocument.getSelection().toString()
+              const question = `Summarize this paragraph\n-----------------------\n${selectedText}\n`
+              sendMessage(question)
+            })
+    
+          $('#explain-button')
+            .off('click')
+            .on('click', () => {
+              var selectedText = iframeDocument.getSelection().toString()
+              const question = `Explain this paragraph\n-----------------------\n${selectedText}\n`
+              sendMessage(question)
+            })
+          // Add event listener to the button
+          button.addEventListener('click', function () {
+            // Handle button click event
+            console.log('Button clicked!')
+            // Remove the button from the document body
+            button.style.display = 'none'
+          })
+        }
+      })
+    })
+    
+    const getSelectedText = () => {
+      var selectedText = iframeDocument.getSelection().toString()
+      console.log(selectedText)
+      return selectedText
+    }
+
+    const question = (e) => {
+      sendMessage(e.target.innertext.slice(3))
+    }
+
+    const questions = document.querySelectorAll(".question")
+    questions.forEach(questionElement => {
+      questionElement.addEventListener('click', () => {
+        sendMessage(questionElement.innerHTML.slice(3))
+      })
+    })
+
+    
+  </script>
+  <script src="{% static 'assets/vendor/libs/autosize/autosize.js' %}"></script>
+  <script>
+    (function(){
+    const textarea = document.querySelector('#message')
+      autosize(textarea);})()
+    const resize = () => {
+      const appChat = document.querySelector('.app-chat')
+      const chatHistoryBody = document.querySelector('.chat-history-body')
+      const appChatHistory = document.querySelector('.app-chat-history')
+      const footer = document.querySelector('.content-footer')
+      appChat.style.height = `calc(100vh - 3.5rem - ${footer.offsetHeight}px)`
+      appChatHistory.style.height = `calc(100vh - 3.5rem - ${footer.offsetHeight}px)`
+      chatHistoryBody.style.height = `calc(100vh - 9rem - ${$('#footer').height()}px - ${footer.offsetHeight}px)`
+    }
+    document.addEventListener("DOMContentLoaded", () =>{
+      resize()
+    })
+    window.addEventListener("resize", () => {
+      console.log('resize')
+      resize()
+    })
+  </script>
+{% endblock %}

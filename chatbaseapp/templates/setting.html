@@ -1,0 +1,341 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block header %}
+  <meta charset="utf-8" />
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
+
+  <title>Account settings - Account | Materialize - Material Design HTML Admin Template</title>
+
+  <meta name="description" content="" />
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/x-icon" href="{% static 'assets/img/favicon/favicon.ico' %}" />
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet" type="text/css" />
+
+  <!-- Icons -->
+  <link rel="stylesheet" type="text/css" href="{% static 'assets/vendor/fonts/materialdesignicons.css' %}" />
+  <link rel="stylesheet" type="text/css" href="{% static 'assets/vendor/fonts/fontawesome.css' %}" />
+  <!-- Menu waves for no-customizer fix -->
+  <link rel="stylesheet" type="text/css" href="{% static 'assets/vendor/libs/node-waves/node-waves.css' %}" />
+
+  <!-- Core CSS -->
+  <link rel="stylesheet" type="text/css" href="{% static 'assets/vendor/css/rtl/core.css' %}" class="template-customizer-core-css" />
+  <link rel="stylesheet" type="text/css" href="{% static 'assets/vendor/css/rtl/theme-default.css' %}" class="template-customizer-theme-css" />
+  <link rel="stylesheet" type="text/css" href="{% static 'assets/css/demo.css' %}" />
+
+  <!-- Vendors CSS -->
+  <link rel="stylesheet" type="text/css" href="{% static 'assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css' %}" />
+  <link rel="stylesheet" type="text/css" href="{% static 'assets/vendor/libs/typeahead-js/typeahead.css' %}" />
+  <link rel="stylesheet" type="text/css" href="{% static 'assets/vendor/libs/select2/select2.css' %}" />
+  <link rel="stylesheet" type="text/css" href="{% static 'assets/vendor/libs/formvalidation/dist/css/formValidation.min.css' %}" />
+  <link rel="stylesheet" type="text/css" href="{% static 'assets/vendor/libs/animate-css/animate.css' %}" />
+  <link rel="stylesheet" type="text/css" href="{% static 'assets/vendor/libs/sweetalert2/sweetalert2.css' %}" />
+
+  <!-- Page CSS -->
+
+  <!-- Helpers -->
+  <script src="{% static 'assets/vendor/js/helpers.js' %}"></script>
+
+  <!--! Template customizer & Theme config files MUST be included after core stylesheets and helpers.js in the <head> section -->
+  <!--? Template customizer: To hide customizer set displayCustomizer value false in config.js.  -->
+  <script src="{% static 'assets/vendor/js/template-customizer.js' %}"></script>
+  <!--? Config:  Mandatory theme config file contain global vars & default theme options, Set your preferred theme option in this file.  -->
+  <script src="{% static 'assets/js/config.js' %}"></script>
+{% endblock %}
+
+{% block body %}
+  <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">ChatBot /</span> Settings</h4>
+
+  <div class="row">
+    <div class="col-md-12">
+      <ul class="nav nav-pills flex-column flex-md-row mb-3 gap-2 gap-lg-0">
+        <li class="nav-item">
+          <a class="nav-link active" href="javascript:void(0);"
+            ><i class="mdi mdi-variable mdi-20px me-1"></i>Parameters</a
+          >
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="pages-account-settings-security.html"
+            ><i class="mdi mdi-lock-open-outline mdi-20px me-1"></i>Security</a
+          >
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="pages-account-settings-billing.html"
+            ><i class="mdi mdi-bookmark-outline mdi-20px me-1"></i>Billing & Plans</a
+          >
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="pages-account-settings-notifications.html"
+            ><i class="mdi mdi-bell-outline mdi-20px me-1"></i>Notifications</a
+          >
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="pages-account-settings-connections.html"
+            ><i class="mdi mdi-link mdi-20px me-1"></i>Connections</a
+          >
+        </li>
+      </ul>
+      <div class="card mb-4">
+        <h4 class="card-header">Settings</h4>
+        <!-- Account -->
+        <div class="card-body">
+          <div class="d-flex align-items-start align-items-sm-center gap-4">
+            <img
+              src="{% static 'assets/img/avatars/bot.jfif' %}"
+              alt="user-avatar"
+              class="d-block w-px-120 h-px-120 rounded"
+              id="uploadedAvatar" />
+            <div class="button-wrapper">
+              <label for="upload" class="btn btn-primary me-2 mb-3" tabindex="0">
+                <span class="d-none d-sm-block">Upload new photo</span>
+                <i class="mdi mdi-tray-arrow-up d-block d-sm-none"></i>
+                <input
+                  type="file"
+                  id="upload"
+                  class="account-file-input"
+                  hidden
+                  accept="image/png, image/jpeg" />
+              </label>
+              <button type="button" class="btn btn-outline-secondary account-image-reset mb-3">
+                <i class="mdi mdi-reload d-block d-sm-none"></i>
+                <span class="d-none d-sm-block">Reset</span>
+              </button>
+
+              <div class="text-muted small">Allowed JPG, GIF or PNG. Max size of 800K</div>
+            </div>
+          </div>
+        </div>
+        <div class="card-body pt-2 mt-1">
+          <form id="formAccountSettings" method="POST" onsubmit="return false">
+            <div class="row mt-2 gy-4">
+              <div class="col-md-6">
+                <div class="form-floating form-floating-outline">
+                  <select id="country" class="select2 form-select">
+                    <option value="openai" selected>OpenAI</option>
+                    <option value="huggingface">Hugging Face Hub</option>
+                  </select>
+                  <label for="country">LLM Model</label>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-floating form-floating-outline">
+                  <label for="html5-range" style='margin-top:-20px; font-size:12px'>Temperature</label>
+                  <input type="range" class="form-range mt-3" id="html5-range">
+                </div>
+              </div>
+              <div class="col-md-12">
+                <div class="form-floating form-floating-outline">
+                  <textarea type="text" class="form-control" id="context" value="">Converse as if you were an AI customer service assistant. Be friendly, creative. Suggest to signup for a FREE account.</textarea>
+                  <label for="context">Context</label>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-floating form-floating-outline">
+                  <input type="text" class="form-control" id="address" name="address" placeholder="Your OpenAI API Key">
+                  <label for="address">OpenAI API Key</label>
+                </div>
+              </div>
+
+              {% comment %} <div class="col-md-6">
+                <div class="form-floating form-floating-outline">
+                  <input class="form-control" type="text" name="lastName" id="lastName" value="Doe" />
+                  <label for="lastName">Last Name</label>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-floating form-floating-outline">
+                  <input
+                    class="form-control"
+                    type="text"
+                    id="email"
+                    name="email"
+                    value="john.doe@example.com"
+                    placeholder="john.doe@example.com" />
+                  <label for="email">E-mail</label>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-floating form-floating-outline">
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="organization"
+                    name="organization"
+                    value="Pixinvent" />
+                  <label for="organization">Organization</label>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="input-group input-group-merge">
+                  <div class="form-floating form-floating-outline">
+                    <input
+                      type="text"
+                      id="phoneNumber"
+                      name="phoneNumber"
+                      class="form-control"
+                      placeholder="202 555 0111" />
+                    <label for="phoneNumber">Phone Number</label>
+                  </div>
+                  <span class="input-group-text">US (+1)</span>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-floating form-floating-outline">
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="address"
+                    name="address"
+                    placeholder="Address" />
+                  <label for="address">Address</label>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-floating form-floating-outline">
+                  <input
+                    class="form-control"
+                    type="text"
+                    id="state"
+                    name="state"
+                    placeholder="California" />
+                  <label for="state">State</label>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-floating form-floating-outline">
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="zipCode"
+                    name="zipCode"
+                    placeholder="231465"
+                    maxlength="6" />
+                  <label for="zipCode">Zip Code</label>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-floating form-floating-outline">
+                  <select id="language" class="select2 form-select">
+                    <option value="">Select Language</option>
+                    <option value="en">English</option>
+                    <option value="fr">French</option>
+                    <option value="de">German</option>
+                    <option value="pt">Portuguese</option>
+                  </select>
+                  <label for="language">Language</label>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-floating form-floating-outline">
+                  <select id="timeZones" class="select2 form-select">
+                    <option value="">Select Timezone</option>
+                    <option value="-12">(GMT-12:00) International Date Line West</option>
+                    <option value="-11">(GMT-11:00) Midway Island, Samoa</option>
+                    <option value="-10">(GMT-10:00) Hawaii</option>
+                    <option value="-9">(GMT-09:00) Alaska</option>
+                    <option value="-8">(GMT-08:00) Pacific Time (US & Canada)</option>
+                    <option value="-8">(GMT-08:00) Tijuana, Baja California</option>
+                    <option value="-7">(GMT-07:00) Arizona</option>
+                    <option value="-7">(GMT-07:00) Chihuahua, La Paz, Mazatlan</option>
+                    <option value="-7">(GMT-07:00) Mountain Time (US & Canada)</option>
+                    <option value="-6">(GMT-06:00) Central America</option>
+                    <option value="-6">(GMT-06:00) Central Time (US & Canada)</option>
+                    <option value="-6">(GMT-06:00) Guadalajara, Mexico City, Monterrey</option>
+                    <option value="-6">(GMT-06:00) Saskatchewan</option>
+                    <option value="-5">(GMT-05:00) Bogota, Lima, Quito, Rio Branco</option>
+                    <option value="-5">(GMT-05:00) Eastern Time (US & Canada)</option>
+                    <option value="-5">(GMT-05:00) Indiana (East)</option>
+                    <option value="-4">(GMT-04:00) Atlantic Time (Canada)</option>
+                    <option value="-4">(GMT-04:00) Caracas, La Paz</option>
+                  </select>
+                  <label for="timeZones">Timezone</label>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-floating form-floating-outline">
+                  <select id="currency" class="select2 form-select">
+                    <option value="">Select Currency</option>
+                    <option value="usd">USD</option>
+                    <option value="euro">Euro</option>
+                    <option value="pound">Pound</option>
+                    <option value="bitcoin">Bitcoin</option>
+                  </select>
+                  <label for="currency">Currency</label>
+                </div>
+              </div> {% endcomment %}
+            </div>
+            <div class="mt-4">
+              <button type="submit" class="btn btn-primary me-2">Save changes</button>
+              <button type="reset" class="btn btn-outline-secondary">Cancel</button>
+            </div>
+          </form>
+        </div>
+        <!-- /Account -->
+      </div>
+      {% comment %} <div class="card">
+        <h5 class="card-header">Reset Chatbot</h5>
+        <div class="card-body">
+          <div class="mb-3 col-12 mb-0">
+            <div class="alert alert-warning">
+              <h6 class="alert-heading mb-1">Are you sure you want to reset your chatbot?</h6>
+              <p class="mb-0">Once you delete your account, there is no going back. Please be certain.</p>
+            </div>
+          </div>
+          <form id="formAccountDeactivation" onsubmit="return false">
+            <div class="form-check mb-3">
+              <input
+                class="form-check-input"
+                type="checkbox"
+                name="accountActivation"
+                id="accountActivation" />
+              <label class="form-check-label" for="accountActivation"
+                >I confirm my account reset</label
+              >
+            </div>
+            <button type="submit" class="btn btn-danger deactivate-account">Reset</button>
+          </form>
+        </div>
+      </div> {% endcomment %}
+    </div>
+  </div>
+{% endblock %}
+{% block script %}
+  <!-- Core JS -->
+  <!-- build:js assets/vendor/js/core.js -->
+  <script src="{% static 'assets/vendor/libs/jquery/jquery.js' %}"></script>
+  <script src="{% static 'assets/vendor/libs/popper/popper.js' %}"></script>
+  <script src="{% static 'assets/vendor/js/bootstrap.js' %}"></script>
+  <script src="{% static 'assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.js' %}"></script>
+  <script src="{% static 'assets/vendor/libs/node-waves/node-waves.js' %}"></script>
+
+  <script src="{% static 'assets/vendor/libs/hammer/hammer.js' %}"></script>
+  <script src="{% static 'assets/vendor/libs/i18n/i18n.js' %}"></script>
+  <script src="{% static 'assets/vendor/libs/typeahead-js/typeahead.js' %}"></script>
+
+  <script src="{% static 'assets/vendor/js/menu.js' %}"></script>
+  <!-- endbuild -->
+
+  <!-- Vendors JS -->
+  <script src="{% static 'assets/vendor/libs/select2/select2.js' %}"></script>
+  <script src="{% static 'assets/vendor/libs/formvalidation/dist/js/FormValidation.min.j' %}s"></script>
+  <script src="{% static 'assets/vendor/libs/formvalidation/dist/js/plugins/Bootstrap5.min.js' %}"></script>
+  <script src="{% static 'assets/vendor/libs/formvalidation/dist/js/plugins/AutoFocus.min.js' %}"></script>
+  <script src="{% static 'assets/vendor/libs/cleavejs/cleave.js' %}"></script>
+  <script src="{% static 'assets/vendor/libs/cleavejs/cleave-phone.js' %}"></script>
+  <script src="{% static 'assets/vendor/libs/sweetalert2/sweetalert2.js' %}"></script>
+
+  <!-- Main JS -->
+  <script src="{% static 'assets/js/main.js' %}"></script>
+
+  <!-- Page JS -->
+  <script src="{% static 'assets/js/pages-account-settings-account.js' %}"></script>
+{% endblock %}

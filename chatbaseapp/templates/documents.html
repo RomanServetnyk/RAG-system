@@ -1,0 +1,425 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block header %}
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
+
+  <title>Documents | PDF CAKE</title>
+
+  <meta name="description" content="" />
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/x-icon" href="{% static 'assets/img/favicon/favicon.ico' %}" />
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" type="text/css" />
+
+  <!-- Icons -->
+  <link rel="stylesheet" type="text/css" href="{% static 'assets/vendor/fonts/materialdesignicons.css' %}" />
+  <link rel="stylesheet" type="text/css" href="{% static 'assets/vendor/fonts/fontawesome.css' %}" />
+  <!-- Menu waves for no-customizer fix -->
+  <link rel="stylesheet" type="text/css" href="{% static 'assets/vendor/libs/node-waves/node-waves.css' %}" />
+
+  <!-- Core CSS -->
+  <link rel="stylesheet" type="text/css" href="{% static 'assets/vendor/css/rtl/core.css' %}" class="template-customizer-core-css" />
+  <link rel="stylesheet" type="text/css" href="{% static 'assets/vendor/css/rtl/theme-default.css' %}" class="template-customizer-theme-css" />
+  <link rel="stylesheet" type="text/css" href="{% static 'assets/css/demo.css' %}" />
+
+  <!-- Vendors CSS -->
+  <link rel="stylesheet" type="text/css" href="{% static 'assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css' %}" />
+  <link rel="stylesheet" type="text/css" href="{% static 'assets/vendor/libs/typeahead-js/typeahead.css' %}" />
+  <link rel="stylesheet" type="text/css" href="{% static 'assets/vendor/libs/quill/katex.css' %}" />
+  <link rel="stylesheet" type="text/css" href="{% static 'assets/vendor/libs/quill/editor.css' %}" />
+  <link rel="stylesheet" type="text/css" href="{% static 'assets/vendor/libs/select2/select2.css' %}" />
+
+  <!-- Page CSS -->
+
+  <link rel="stylesheet" type="text/css" href="{% static 'assets/vendor/css/pages/app-email.css' %}" />
+  <!-- Helpers -->
+  <script src="{% static 'assets/vendor/js/helpers.js' %}"></script>
+
+  <!--! Template customizer & Theme config files MUST be included after core stylesheets and helpers.js in the <head> section -->
+  <!--? Template customizer: To hide customizer set displayCustomizer value false in config.js.  -->
+  <script src="{% static 'assets/vendor/js/template-customizer.js' %}"></script>
+  <!--? Config:  Mandatory theme config file contain global vars & default theme options, Set your preferred theme option in this file.  -->
+  <script src="{% static 'assets/js/config.js' %}"></script>
+
+  <style>
+    .modal-body-div {
+      min-height: 40vh;
+      max-height: 60vh;
+      overflow-y: auto;
+    }
+    .disabled {
+      pointer-events: none;
+    }
+    .empty_li {
+      height: calc(100vh - 13.8rem);
+    }
+    #loading_bar{
+      height: 2px;
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 0;
+      background-color: #5a5fe0;
+    }
+    .disabled-button{
+      cursor: not-allowed!important;
+    }
+  </style>
+{% endblock %}
+
+{% block body %}
+  <div class="app-email card" style="height: 100%;">
+    <div class="border-0">
+      <div class="row g-0">
+        <!-- Emails List -->
+        <div class="col app-emails-list">
+          <div class="card shadow-none border-0" >
+            <div class="card-body emails-list-header p-3 py-2">
+              <!-- Email List: Search -->
+              <div class="d-flex justify-content-between align-items-center">
+                <div class="d-flex align-items-center w-100">
+                  <div class="mb-0 mb-lg-1 w-100">
+                    <div class="input-group input-group-merge shadow-none">
+                      <span class="input-group-text border-0 ps-0" id="email-search"><i class="mdi mdi-magnify mdi-20px text-muted"></i></span>
+                      <input type="text" class="form-control email-search-input border-0" placeholder="Search..." aria-label="Search..." aria-describedby="email-search" value="{{search}}"/>
+                    </div>
+                  </div>
+                </div>
+                <div class="d-flex align-items-center mb-0 mb-md-2">
+                  <div class="btn-compost-wrapper d-grid">
+                    <button class="btn btn-primary btn-compose" data-bs-toggle="modal" data-bs-target="#emailComposeSidebar" onclick="clickUploadButton()">Upload</button>
+                  </div>
+                </div>
+              </div>
+              <hr class="mx-n3 emails-list-header-hr" />
+              <!-- Email List: Actions -->
+              <div class="d-flex justify-content-between align-items-center mb-2">
+                <div class="d-flex align-items-center">
+                  <div class="form-check me-1 mb-0">
+                    <input class="form-check-input" type="checkbox" id="email-select-all" />
+                    <label class="form-check-label" for="email-select-all"></label>
+                  </div>
+                  <div class="btn btn-text-secondary btn-icon rounded-pill me-1">
+                    <i class="mdi mdi-delete-outline mdi-24px email-list-delete cursor-pointer"></i>
+                  </div>
+                </div>
+                <div class="email-pagination d-sm-flex d-none align-items-center flex-wrap justify-content-between justify-sm-content-end">
+                  <span class="d-sm-block d-none mx-3">{{pagination_string}}</span>
+                  <a class="btn btn-icon btn-text-secondary rounded-pill btn-sm {% if previous == '' %}disabled{% endif %} " href="{{previous}}"><i class="email-prev mdi mdi-chevron-left cursor-pointer {% if previous == '' %}text-muted{% endif %}  scaleX-n1-rtl"></i></a>
+                  <a class="btn btn-icon btn-text-secondary rounded-pill btn-sm {% if next == '' %}disabled{% endif %}"  href="{{next}}"><i class="email-next mdi mdi-chevron-right cursor-pointer {% if next == '' %}text-muted{% endif %}  scaleX-n1-rtl"></i></a>
+                </div>
+              </div>
+            </div>
+            <hr class="container-m-nx m-0" />
+            <!-- Email List: Items -->
+            <div class="email-list pt-0">
+              <ul class="list-unstyled m-0">
+                {% if documents|length > 0 %}
+                  {% for document in documents %}
+                    <a href="/document/{{ document.id }}">
+                      <li class="email-list-item email-marked-read" data-starred="true" data-bs-toggle="sidebar" data-target="#app-email-view" id="{{document.id}}">
+                        <div class="d-flex align-items-center">
+                          <div class="form-check mb-0">
+                            <input class="email-list-item-input form-check-input" type="checkbox" id="{{ document.id }}" />
+                            <label class="form-check-label" for="email-{{ document.id }}"></label>
+                          </div>
+                          <i class="mdi mdi-file-document-outline mdi-24px d-sm-inline-block d-none cursor-pointer ms-1 me-3"></i>
+                          <div class="email-list-item-content ms-2 ms-sm-0 me-2">
+                            <span class="email-list-item-username me-2 h6">{{ document.name }}</span>
+                          </div>
+                          <div class="email-list-item-meta ms-auto d-flex align-items-center d-none">
+                            <small class="email-list-item-time text-muted">08:40 AM</small>
+                            <ul class="list-inline email-list-item-actions">
+                              <li class="list-inline-item email-delete" >
+                                <i class="mdi mdi-delete-outline mdi-24px" id="{{ document.id }}"></i>
+                              </li>
+                            </ul>
+                          </div>
+                        </div>
+                      </li>
+                    </a>
+                  {% endfor %}
+                {% else %}
+                  <li class="email-list-item email-marked-read empty_li d-flex align-items-center justify-content-center" data-starred="true" data-bs-toggle="sidebar" data-target="#app-email-view">
+                    <div class="d-flex align-items-center justify-content-center">
+                      <div class="email-list-item-content ms-2 ms-sm-0 d-flex justify-content-center align-items-center">
+                        <span class="email-list-item-username h6 mb-0 display-5 text-center">No document. To begin, Upload your PDF file.</span>
+                      </div>
+                    </div>
+                  </li>
+                {% endif %}
+              </ul>
+            </div>
+          </div>
+          <div class="app-overlay"></div>
+        </div>
+        <!-- /Emails List -->
+      </div>
+    </div>
+
+    <!-- Compose Email -->
+    <div class="app-email-compose modal" id="emailComposeSidebar" tabindex="-1" aria-labelledby="emailComposeSidebar" aria-hidden="true">
+      <div class="modal-dialog m-0 me-md-4 mb-4 modal-lg">
+        <div class="modal-content p-0">
+          <div class="modal-header bg-body py-3">
+            <p class="modal-title fw-semibold fs-5">Upload PDF</p>
+            <div class="d-flex align-items-center gap-2">
+              <i class="mdi mdi-minus"></i>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+          </div>
+          <div class="modal-body flex-grow-1 pb-sm-0 p-4 py-2">
+            <div class="modal-body-div" style="position: relative;">
+              <div class="email-list pt-0">
+                <ul id="file-list" class="list-unstyled m-0"></ul>
+              </div>
+              <div id="loading_bar"></div>
+            </div>
+            <form class="email-compose-form" id="upload-pdfs">
+              {% csrf_token %}
+              <hr class="container-m-nx mt-0 mb-2" />
+              <div class="email-compose-actions d-flex justify-content-end align-items-center gap-2 mb-2">
+                <div class="d-flex align-items-center disabled-button" id="selectButton">
+                  <label for="attach-file" class="btn btn-secondary" id="select-button">Select</label>
+                  <input type="file" name="file-input" class="d-none" id="attach-file" accept="application/pdf" multiple />
+                </div>
+                <div id="submitButton" class="disabled-button" style="display: none;">
+                  <div class="d-flex align-items-center">
+                    <div class="btn-group"> 
+                      <button type="button" class="btn btn-primary" onclick="uploadPDFs(this)" id="submit-button">
+                        <div class="me-2" style="display: none;"  id='upload-spinner'>
+                          <div class="spinner-border spinner-border-sm text-white" role="status" >
+                          <span class="visually-hidden">Loading...</span>
+                        </div></div>
+                        <span>Submit</span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- /Compose Email -->
+  </div>
+{% endblock %}
+{% block script %}
+  <!-- Core JS -->
+  <!-- build:js assets/vendor/js/core.js -->
+  <script src="{% static 'assets/vendor/libs/jquery/jquery.js' %}"></script>
+  <script src="{% static 'assets/vendor/libs/popper/popper.js' %}"></script>
+  <script src="{% static 'assets/vendor/js/bootstrap.js' %}"></script>
+  <script src="{% static 'assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.js' %}"></script>
+  <script src="{% static 'assets/vendor/libs/node-waves/node-waves.js' %}"></script>
+
+  <script src="{% static 'assets/vendor/libs/hammer/hammer.js' %}"></script>
+  <script src="{% static 'assets/vendor/libs/i18n/i18n.js' %}"></script>
+  <script src="{% static 'assets/vendor/libs/typeahead-js/typeahead.js' %}"></script>
+
+  <script src="{% static 'assets/vendor/js/menu.js' %}"></script>
+  <!-- endbuild -->
+
+  <!-- Vendors JS -->
+  <script src="{% static 'assets/vendor/libs/quill/katex.js' %}"></script>
+  <script src="{% static 'assets/vendor/libs/quill/quill.js' %}"></script>
+  <script src="{% static 'assets/vendor/libs/select2/select2.js' %}"></script>
+  <script src="{% static 'assets/vendor/libs/block-ui/block-ui.js' %}"></script>
+
+  <!-- Main JS -->
+  <script src="{% static 'assets/js/main.js' %}"></script>
+
+  <!-- Page JS -->
+  <script src="{% static 'assets/js/app-email.js' %}"></script>
+
+  <!--? Template customizer: To hide customizer set displayCustomizer value false in config.js.  -->
+  <script src="{% static 'assets/vendor/js/template-customizer.js' %}"></script>
+  <!--? Config:  Mandatory theme config file contain global vars & default theme options, Set your preferred theme option in this file.  -->
+  <script src="{% static 'assets/js/config.js' %}"></script>
+  <script>
+    function formatFileSize(sizeInBytes) {
+      const kiloByte = 1024;
+      const megaByte = kiloByte * 1024;
+    
+      if (sizeInBytes >= megaByte) {
+        const formattedSize = (sizeInBytes / megaByte).toFixed(2);
+        return `${formattedSize} MB`;
+      } else if (sizeInBytes >= kiloByte) {
+        const formattedSize = (sizeInBytes / kiloByte).toFixed(2);
+        return `${formattedSize} KB`;
+      } else {
+        return `${sizeInBytes} B`;
+      }
+    }
+    let limited = false
+    let count = 0
+    const attachfileInput = document.querySelector('#attach-file'),
+      submitBtn = document.querySelector('#submitButton'),
+      uploadFileList = document.querySelector('#file-list'),
+      loadingBar = document.querySelector('#loading_bar')
+    //Upload Input
+    attachfileInput.addEventListener('change', () => {
+      loadingBar.style.width = '0'
+      const aFileList = ['<li\
+        class="email-list-item email-marked-read m-1"\
+        data-starred="true"\
+        data-bs-toggle="sidebar"\
+        data-target="#app-email-view" style="border-bottom:1px solid grey">\
+        <div class="d-flex align-items-center justify-content-between">\
+          <div class="email-list-item-content ms-2 ms-sm-0 me-2" style="flex-shrink:1; overflow-x:hidden">\
+            <span class="email-list-item-username me-2 h6" style="overflow-x:hidden;text-wrap:nowrap">\
+              <i class="mdi mdi-file-document-outline mdi-24px d-sm-inline-block d-none cursor-pointer ms-1 me-3"></i>',
+            '</span>\
+          </div>\
+          <div style="flex-shrink: 0;" class="d-flex align-items-center gap-2"> <input type="checkbox" class="ocr"/> OCR </div>\
+        </div>\
+      </li>']
+      
+      uploadFileList.innerHTML = ''
+      const l = attachfileInput.files.length
+      if (l > 0) {
+        submitBtn.style.display = 'block'
+      } else {
+        submitBtn.style.display = 'none'
+      }
+      const file_size_limit = parseInt('{{file_size_limit}}')
+      count = 0
+      for (let i = 0; i < l; i++) {
+        const size = attachfileInput.files[i].size
+        let size_string = ` ( ${formatFileSize(size)} ) `
+        if (size > file_size_limit){
+          count += 1
+          size_string = `<span style="color:red">${size_string}</span>`
+        }
+        uploadFileList.innerHTML += [aFileList[0], attachfileInput.files[i].name, size_string, aFileList[1]].join('')
+      }
+      if(count > 0){
+        alert('error', `You selected ${count} file${count > 1 ? 's' : ''} that exceed${count > 1 ? '' : 's'} your upload file limit(${formatFileSize(parseInt("{{file_size_limit}}"))}). You cannot upload them. Please upgrade your account level to upload them.`)
+      }
+    })
+
+    //Upload PDFs
+    //-------------------
+
+    let isUploading = false
+
+    function uploadPDFs(button) {
+      if (isUploading) {
+        return
+      }
+      if (count > 0){
+        alert('error', `You selected ${count} file${count > 1 ? 's' : ''} that exceed${count > 1 ? '' : 's'} your upload file limit(${formatFileSize(parseInt("{{file_size_limit}}"))}). You cannot upload them. Please upgrade your account level to upload them.`)
+        return
+      }
+      const attachfileInput = document.querySelector('#attach-file')
+      const l = attachfileInput.files.length
+      if (l === 0) return
+      isUploading = true
+      attachfileInput.setAttribute('disabled', 'disabled')
+      $('#submit-button').addClass('disabled-button')
+      $('#select-button').addClass('disabled-button')
+      let formData = new FormData();
+      ocrCheckBoxes = document.querySelectorAll('.ocr')
+      need_ocrs = []
+      for(let checkBox of ocrCheckBoxes){
+        need_ocrs.push(checkBox.checked)
+      }
+      formData.append('length', l);
+      formData.append('need_ocrs', need_ocrs)
+      for (let i = 0; i < l; i++) {
+        formData.append('file' + i, attachfileInput.files[i]);
+      }
+      document.querySelector('#upload-spinner').style.display = 'block';
+      alert('info', 'Uploading! Please wait!')
+      fetch('/upload', {
+        method: 'POST',
+        headers: {
+          'X-CSRFToken': getCookie('csrftoken')
+        },
+        body: formData
+      })
+        .then(response => response.json())
+        .then(data => {
+          if(data.error) {
+            alert('error', data.error)
+            return
+          }
+          if(data.success) {
+            alert('success', data.success)
+          }
+          console.log(data); // File uploaded successfully
+          const uploadFileList = document.querySelector('#file-list')
+          uploadFileList.innerHTML = ''
+          attachfileInput.value = ''
+          location.reload();
+        })
+        .catch(error => console.error(error))
+        .finally(() => {
+          isUploading = false
+          loadingBar.style.width = '0'
+          document.querySelector('#upload-spinner').style.display = 'none';
+          attachfileInput.removeAttribute('disabled')
+          $('#submit-button').removeClass('disabled-button')
+          $('#select-button').removeClass('disabled-button')
+        }); // Error occurred during file upload
+    }
+
+    // Helper function to get CSRF token value from cookies
+    function getCookie(name) {
+      var cookieValue = null;
+      if (document.cookie && document.cookie !== '') {
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+          var cookie = cookies[i].trim();
+          if (cookie.substring(0, name.length + 1) === (name + '=')) {
+            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+            break;
+          }
+        }
+      }
+      return cookieValue;
+    }
+
+    const clickUploadButton = () => {
+      attachfileInput.click()
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const emailSearch = document.querySelector('.email-search-input');
+  
+      if (emailSearch) {
+        emailSearch.addEventListener('change', e => {
+          let searchValue = e.currentTarget.value.toLowerCase();
+          const urlParams = new URLSearchParams(window.location.search);
+          let page = urlParams.get('page');
+          page = page === null ? 1 : parseInt(page);
+          const params = new URLSearchParams({
+            search: searchValue,
+            page: page
+          });
+          location.replace(`/documents?${params}`);
+        });
+      }
+
+      resize()
+    });
+
+    const resize = () => {
+      const emptyLi = document.querySelector('.empty_li')
+      const emailList = document.querySelector('.card > .email-list')
+      const footer = document.querySelector('.content-footer')
+      emailList.style.height = `calc(100vh - 11.8rem - ${footer.offsetHeight}px)`
+      emptyLi.style.height = `calc(100vh - 11.8rem - ${footer.offsetHeight}px)`
+    }
+
+    window.addEventListener("resize", () => {
+      resize()
+    })
+  </script>
+{% endblock %}
